@@ -14,6 +14,8 @@
 bin/
 gen/
 build/
+target/
+out/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -21,5 +23,9 @@ local.properties
 # IDE project files
 .classpath
 .project
+.settings
 *.iml
 .idea
+
+.gradle
+

@@ -1,10 +1,12 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.5.+'
+        classpath 'com.github.townsfolk:gradle-release:1.2'
     }
 }
+
+apply plugin: 'release'
+

@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+
 apply plugin: 'android-library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+archivesBaseName = 'CartoCache'
+group = 'com.codeandmagic.cartocache'
 
 repositories {
     mavenCentral()
@@ -6,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:3.1.36'
+    compile 'com.google.android.gms:play-services:3.1.36+'
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.android.support:appcompat-v7:18.0.+'
 }
@@ -18,5 +33,92 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 18
+    }
+}
+
+task apklib(type: Zip) {
+    dependsOn 'packageReleaseJar'
+    appendix = extension = 'apklib'
+
+    from 'AndroidManifest.xml'
+    into('res') {
+        from 'src/main/res'
+    }
+    into('src') {
+        from 'src/main/java'
+    }
+}
+
+artifacts {
+    archives apklib
+}
+
+project.ext.set('sonatypeUsername', "")
+project.ext.set('sonatypePassword', "")
+
+uploadArchives {
+
+
+
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            modifyPom(addFilter('aar') { artifact, file ->
+                artifact.name == 'CartoCache'
+            })
+
+            modifyPom(addFilter('apklib') { artifact, file ->
+                artifact.name == 'CartoCache'
+            })
+
+            // There's no official apklib for Google Play services, so we
+            // can't really maintain that dependency for the apklib packaging.
+            pom('apklib').whenConfigured { pom ->
+                pom.dependencies = []
+            }
+        }
+    }
+}
+
+def modifyPom(pom) {
+    pom.project {
+        name 'CartoCache Android Library'
+        description 'Handy library to cache geolocation data, like pins on a map.'
+        url 'https://github.com/CodeAndMagic/CartoCache'
+
+        scm {
+            url ''
+            connection ''
+            developerConnection ''
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        organization {
+            name 'Code And Magic LTD'
+            url 'https://github.com/CodeAndMagic'
+        }
+
+        developers {
+            developer {
+                id 'evelyne24'
+                name 'Evelina Vrabie'
+                url 'http://evelina.vrabie.info'
+            }
+        }
     }
 }

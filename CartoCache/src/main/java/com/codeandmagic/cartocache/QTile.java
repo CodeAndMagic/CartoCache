@@ -155,7 +155,7 @@ public class QTile {
         this.zoom = zoom;
 
         worldLeftTop = new Point(x * TILE_SIZE, y * TILE_SIZE);
-        worldRightBottom = new Point((x + 1) * TILE_SIZE, (y - 1) * TILE_SIZE);
+        worldRightBottom = new Point((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
 
         topLeft = worldPointToLatLng(worldLeftTop, zoom);
         bottomRight = worldPointToLatLng(worldRightBottom, zoom);
@@ -164,10 +164,13 @@ public class QTile {
         topRight = new LatLng(topLeft.latitude, bottomRight.longitude);
 
         // (BR - TL) / 2 + TL
-        double halfX = (bottomRight.longitude + topLeft.longitude) / 2.0;
+        int centerX = (worldRightBottom.x + worldLeftTop.x) / 2;
+        //double halfX = (bottomRight.longitude + topLeft.longitude) / 2.0;
         // (TL - BR) / 2 + BR
-        double halfY = (bottomRight.latitude + topLeft.latitude) / 2.0;
-        center = new LatLng(halfY, halfX);
+        //double halfY = (bottomRight.latitude + topLeft.latitude) / 2.0;
+        int centerY = (worldRightBottom.y + worldLeftTop.y) / 2;
+        //center = new LatLng(centerX, centerX);
+        center = worldPointToLatLng(new Point(centerX, centerY), zoom);
 
         radius = distanceBetween(center.latitude, center.longitude, topLeft.latitude, topLeft.longitude);
         quadKey = getQuadKey();

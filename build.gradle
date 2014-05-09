@@ -3,10 +3,23 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-        classpath 'com.github.townsfolk:gradle-release:1.2'
+        classpath 'com.android.tools.build:gradle:0.9.+'
     }
 }
 
-apply plugin: 'release'
+allprojects {
+    version = VERSION_NAME
+    group = GROUP_ID
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
+
+apply plugin: 'android-reporting'
 

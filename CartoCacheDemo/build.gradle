@@ -1,34 +1,26 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-    }
-}
-
 apply plugin: 'android'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
-    compile 'com.google.code.gson:gson:1.7.2'
+    compile 'com.google.code.gson:gson:+'
     compile project(':CartoCache')
-    compile project(':Volley')
 }
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "18.0.1"
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 18
+        minSdkVersion 9
+        targetSdkVersion 19
+        versionName project.VERSION_NAME
+        versionCode Integer.parseInt(project.VERSION_CODE)
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    //enforceUniquePackageName false
 }
 
 
